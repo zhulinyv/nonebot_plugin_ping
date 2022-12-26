@@ -26,7 +26,7 @@ async def api_call(api):
                 max = (res["data"]["最大延迟"])
                 min = (res["data"]["最小延迟"])
                 place = (res["data"]["服务器归属地"])
-                res = "域名: " + url + '\n' + "IP: " + ip + '\n' + "最大延迟: " + max + '\n' + "最小延迟: ", min + '\n' + "服务器归属地: " + place
+                res = f"域名: {url}\nIP: {ip}\n最大延迟: {max}\n最小延迟: {min}\n服务器归属地: {place}"
                 return res
             elif res["code"] == 201:
                 res = (res["data"])
