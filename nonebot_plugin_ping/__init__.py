@@ -1,23 +1,20 @@
 from nonebot.plugin.on import on_command
-from nonebot.adapters.onebot.v11 import Message
+from nonebot.adapters.onebot.v11 import Message, MessageSegment
 from nonebot.params import CommandArg
 from httpx import AsyncClient
 
 
-ping = on_command('ping ', aliases={'Ping '}, priority=60, block=True)
 
+# PING网址
+ping = on_command('ping', aliases={'Ping'}, priority=60, block=True)
 @ping.handle()
 async def _(msg: Message = CommandArg()):
     url = msg.extract_plain_text().strip()
     api = f'https://api.juncikeji.xyz/api/ping.php?ip={url}'
-
-    message = await api_call(api)
-
+    message = await api_ping(api)
     await ping.finish(message)
 
-
-
-async def api_call(api):
+async def api_ping(api):
     async with AsyncClient() as client:
             res = (await client.get(api)).json()
             if res["code"] == 200:
@@ -33,3 +30,16 @@ async def api_call(api):
                 return res
             else:
                 return "寄"
+
+
+
+# 二维码生成
+qrcode = on_command('qrcode', aliases={'二维码', '二维码生成'}, priority=60, block=True)
+@qrcode.handle()
+async def _(msg: Message = CommandArg()):
+    url = msg.extract_plain_text().strip()
+    api = f'https://api.gmit.vip/Api/QrCode?text={url}'
+    await qrcode.finish(MessageSegment.image(file=api))
+
+
+
