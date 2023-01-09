@@ -26,8 +26,8 @@ async def api_ping(api):
                 place = (res["data"]["location"])
                 res = f"域名: {url}\nIP: {ip}\n最大延迟: {max}\n最小延迟: {min}\n平均延迟: {avg}\n服务器归属地: {place}"
                 return res
-            elif res["code"] == 201:
-                res = (res["data"])
+            elif res["code"] == 400:
+                res = (res["msg"])
                 return res
             else:
                 return "寄"
