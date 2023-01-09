@@ -20,4 +20,5 @@
 
 | 名称          | 示例                | 说明                |
 | ------------- | ------------------- | ------------------ |
-| ping  + url   | ping www.baidu.com | ping 一个网址        |
+| ping + url   | ping www.baidu.com   | ping 一个网址       |
+| qrcode + url | qrcode www.baidu.com | 给网址生成一个二维码 |
