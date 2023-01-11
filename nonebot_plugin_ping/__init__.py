@@ -2,16 +2,31 @@ from nonebot.plugin.on import on_command
 from nonebot.adapters.onebot.v11 import Message, MessageSegment
 from nonebot.params import CommandArg
 from httpx import AsyncClient
+import nonebot
+import asyncio
+import platform
+
+try:
+    model: int = nonebot.get_driver().config.ping
+except:
+    model: int = 1
 
 
 
-# PING网址
+"""PING网址"""
 ping = on_command('ping', aliases={'Ping'}, priority=60, block=True)
 @ping.handle()
 async def _(msg: Message = CommandArg()):
     url = msg.extract_plain_text().strip()
-    api = f'https://api.gmit.vip/Api/Ping?format=json&ip={url}'
-    message = await api_ping(api)
+
+    if model == 1:
+        api = f'https://api.gmit.vip/Api/Ping?format=json&ip={url}'
+        message = await api_ping(api)
+    elif model == 2:
+        message = await cmd_ping(url)
+    else:
+        message = "PING 配置项填写有误, 联系 SUPPERUSER 检查!"
+
     await ping.finish(message)
 
 async def api_ping(api):
@@ -26,15 +41,37 @@ async def api_ping(api):
                 place = (res["data"]["location"])
                 res = f"域名: {url}\nIP: {ip}\n最大延迟: {max}\n最小延迟: {min}\n平均延迟: {avg}\n服务器归属地: {place}"
                 return res
-            elif res["code"] == 400:
-                res = (res["msg"])
+            elif res["code"] == 201:
+                res = (res["data"])
                 return res
             else:
                 return "寄"
 
+async def cmd_ping(url):
+    # 获取系统信息, Windows 请求默认 4 次, Linux 请求默认不会停止.
+    sys = platform.system()
+    # 由于不同系统参数不同, 这里做一下判断.
+    if sys == "Windows":
+        url = f"ping {url} -n 4"
+    elif sys == "Linux":
+        # Ubuntu 系统是 -c , 其它发行版未测试.
+        url = f"ping {url} -c 4"
+    else:
+        # 其它系统未测试.
+        url = f"ping {url}"
+    
+    p = await asyncio.subprocess.create_subprocess_shell(url, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
+    stdout, stderr = await p.communicate()
+    try:
+        result = (stdout or stderr).decode('gb2312')
+    except Exception:
+        result = str(stdout or stderr)
+    result = result.strip()
+    return result
 
 
-# 二维码生成
+
+"""二维码生成"""
 qrcode = on_command('qrcode', aliases={'二维码', '二维码生成'}, priority=60, block=True)
 @qrcode.handle()
 async def _(msg: Message = CommandArg()):
