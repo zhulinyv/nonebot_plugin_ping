@@ -15,10 +15,16 @@
     1.pip install nonebot-plugin-ping
     2.nb plugin install nonebot-plugin-ping
     3.Download zip
-    
+
+## 配置
+
+内置两种 ping 的方式，默认调用 API 获取。
+
+在 .env 配置文件中添加 `PING=2` 来更改**本地**运行 ping 指令。
+
 ## 指令
 
-| 名称          | 示例                | 说明                |
-| ------------- | ------------------- | ------------------ |
+| 名称          | 示例                 | 说明                |
+| ------------ | -------------------- | ------------------ |
 | ping + url   | ping www.baidu.com   | ping 一个网址       |
 | qrcode + url | qrcode www.baidu.com | 给网址生成一个二维码 |
