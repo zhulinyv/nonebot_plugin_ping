@@ -6,7 +6,6 @@ import nonebot
 import asyncio
 import platform
 
-
 try:
     model: int = nonebot.get_driver().config.ping
 except:
@@ -19,7 +18,6 @@ ping = on_command('ping', aliases={'Ping'}, priority=60, block=True)
 @ping.handle()
 async def _(msg: Message = CommandArg()):
     url = msg.extract_plain_text().strip()
-
     if model == 1:
         api = f'https://api.gmit.vip/Api/Ping?format=json&ip={url}'
         message = await api_ping(api)
@@ -27,26 +25,25 @@ async def _(msg: Message = CommandArg()):
         message = await cmd_ping(url)
     else:
         message = "PING 配置项填写有误, 联系 SUPPERUSER 检查!"
-
     await ping.finish(message)
 
 async def api_ping(api):
     async with AsyncClient() as client:
-            res = (await client.get(api)).json()
-            if res["code"] == 200:
-                url = (res["data"]["host"])
-                ip = (res["data"]["ip"])
-                max = (res["data"]["ping_max"])
-                min = (res["data"]["ping_min"])
-                avg = (res["data"]["ping_avg"])
-                place = (res["data"]["location"])
-                res = f"域名: {url}\nIP: {ip}\n最大延迟: {max}\n最小延迟: {min}\n平均延迟: {avg}\n服务器归属地: {place}"
-                return res
-            elif res["code"] == 201:
-                res = (res["data"])
-                return res
-            else:
-                return "寄"
+        res = (await client.get(api)).json()
+        if res["code"] == 200:
+            url = (res["data"]["host"])
+            ip = (res["data"]["ip"])
+            max = (res["data"]["ping_max"])
+            min = (res["data"]["ping_min"])
+            avg = (res["data"]["ping_avg"])
+            place = (res["data"]["location"])
+            res = f"域名: {url}\nIP: {ip}\n最大延迟: {max}\n最小延迟: {min}\n平均延迟: {avg}\n服务器归属地: {place}"
+            return res
+        elif res["code"] == 201:
+            res = (res["data"])
+            return res
+        else:
+            return "寄"
 
 async def cmd_ping(url):
     # 获取系统信息, Windows 请求默认 4 次, Linux 请求默认不会停止.
@@ -60,7 +57,6 @@ async def cmd_ping(url):
     else:
         # 其它系统未测试.
         url = f"ping {url}"
-    
     p = await asyncio.subprocess.create_subprocess_shell(url, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
     stdout, stderr = await p.communicate()
     try:
@@ -79,7 +75,9 @@ async def _(msg: Message = CommandArg()):
     url = msg.extract_plain_text().strip()
     api = f'https://api.gmit.vip/Api/QrCode?text={url}'
     await qrcode.finish(MessageSegment.image(file=api))
-    
+
+
+
 """WHOIS查询"""
 whois = on_command('whois', aliases={'whois', 'whois查询'}, priority=60, block=True)
 @whois.handle()
@@ -91,19 +89,18 @@ async def _(msg: Message = CommandArg()):
     
 async def whois_search(api):
     async with AsyncClient() as client:
-            res = (await client.get(api)).json()
-            if res["data"]["status"] == "":
-                return "寄"
-            else:
-                url = (res["data"]["domain_name"])
-                reg = (res["data"]["registrars"])
-                email = (res["data"]["owner_email"])
-                regtime = (res["data"]["create_date"])
-                exptime = (res["data"]["expire_date"])
-                dnsserver = (res["data"]["nameserver"])
-                status = (res["data"]["status"])
-                updatetime = (res["data"]["update_date"])
-                res = f"请求域名: {url}\n注册商: {reg}\n邮箱: {email}\n注册时间: {regtime}\n过期时间: {exptime}\nDNS服务器: {dnsserver}\n域名状态: {status}\n更新时间: {updatetime}"
-                return res
-
-                
+        res = (await client.get(api)).json()
+        if res["data"]["status"] == "":
+            return "寄"
+        else:
+            url = (res["data"]["domain_name"])
+            reg = (res["data"]["registrars"])
+            email = (res["data"]["owner_email"])
+            regtime = (res["data"]["create_date"])
+            exptime = (res["data"]["expire_date"])
+            dnsserver = (res["data"]["nameserver"])
+            status = (res["data"]["status"])
+            updatetime = (res["data"]["update_date"])
+            res = f"请求域名: {url}\n注册商: {reg}\n邮箱: {email}\n注册时间: {regtime}\n过期时间: {exptime}\nDNS服务器: {dnsserver}\n域名状态: {status}\n更新时间: {updatetime}"
+            return res
+            
