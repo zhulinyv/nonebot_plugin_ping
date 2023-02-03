@@ -31,13 +31,14 @@ async def api_ping(api):
     async with AsyncClient() as client:
         res = (await client.get(api)).json()
         if res["code"] == 200:
+            rurl = (res["info"]["request"]["query"]["ip"])
             url = (res["data"]["host"])
             ip = (res["data"]["ip"])
             max = (res["data"]["ping_max"])
             min = (res["data"]["ping_min"])
             avg = (res["data"]["ping_avg"])
             place = (res["data"]["location"])
-            res = f"域名: {url}\nIP: {ip}\n最大延迟: {max}\n最小延迟: {min}\n平均延迟: {avg}\n服务器归属地: {place}"
+            res = f"域名: {rurl}\nIP: {ip}\n最大延迟: {max}\n最小延迟: {min}\n平均延迟: {avg}\n服务器归属地: {place}"
             return res
         elif res["code"] == 201:
             res = (res["data"])
@@ -103,4 +104,3 @@ async def whois_search(api):
             updatetime = (res["data"]["update_date"])
             res = f"请求域名: {url}\n注册商: {reg}\n邮箱: {email}\n注册时间: {regtime}\n过期时间: {exptime}\nDNS服务器: {dnsserver}\n域名状态: {status}\n更新时间: {updatetime}"
             return res
-            
