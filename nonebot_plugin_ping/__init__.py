@@ -31,17 +31,16 @@ async def api_ping(api):
     async with AsyncClient() as client:
         res = (await client.get(api)).json()
         if res["code"] == 200:
-            rurl = (res["info"]["request"]["query"]["ip"])
-            url = (res["data"]["host"])
+            url = (res["info"]["request"]["query"]["ip"])
             ip = (res["data"]["ip"])
             max = (res["data"]["ping_max"])
             min = (res["data"]["ping_min"])
             avg = (res["data"]["ping_avg"])
             place = (res["data"]["location"])
-            res = f"域名: {rurl}\nIP: {ip}\n最大延迟: {max}\n最小延迟: {min}\n平均延迟: {avg}\n服务器归属地: {place}"
+            res = f"域名: {url}\nIP: {ip}\n最大延迟: {max}\n最小延迟: {min}\n平均延迟: {avg}\n服务器归属地: {place}"
             return res
-        elif res["code"] == 201:
-            res = (res["data"])
+        elif res["code"] == 400:
+            res = (res["msg"])
             return res
         else:
             return "寄"
