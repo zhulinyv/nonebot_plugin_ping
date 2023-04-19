@@ -1,4 +1,4 @@
-from nonebot.plugin.on import on_command
+﻿from nonebot.plugin.on import on_command
 from nonebot.adapters.onebot.v11 import Message, MessageSegment
 from nonebot.params import CommandArg
 from httpx import AsyncClient
@@ -11,6 +11,8 @@ try:
 except:
     model: int = 1
 
+from .httpcat import httpcat_msgs
+
 
 
 """PING网址"""
@@ -18,31 +20,30 @@ ping = on_command('ping', aliases={'Ping'}, priority=60, block=True)
 @ping.handle()
 async def _(msg: Message = CommandArg()):
     url = msg.extract_plain_text().strip()
+
     if model == 1:
-        api = f'https://api.gmit.vip/Api/Ping?format=json&ip={url}'
+        api = f'https://v.api.aa1.cn/api/api-ping/ping.php?url={url}'
         message = await api_ping(api)
     elif model == 2:
         message = await cmd_ping(url)
     else:
         message = "PING 配置项填写有误, 联系 SUPPERUSER 检查!"
+
     await ping.finish(message)
+
 
 async def api_ping(api):
     async with AsyncClient() as client:
         res = (await client.get(api)).json()
-        if res["code"] == 200:
-            url = (res["info"]["request"]["query"]["ip"])
-            ip = (res["data"]["ip"])
-            max = (res["data"]["ping_max"])
-            min = (res["data"]["ping_min"])
-            avg = (res["data"]["ping_avg"])
-            place = (res["data"]["location"])
-            res = f"域名: {url}\nIP: {ip}\n最大延迟: {max}\n最小延迟: {min}\n平均延迟: {avg}\n服务器归属地: {place}"
+        try:
+            url = (res["host"])
+            ip = (res["ip"])
+            max = (res["ping_time_max"])
+            min = (res["ping_time_min"])
+            place = (res["location"])
+            res = f"域名: {url}\nIP: {ip}\n最大延迟: {max}\n最小延迟: {min}\n服务器归属地: {place}"
             return res
-        elif res["code"] == 400:
-            res = (res["msg"])
-            return res
-        else:
+        except Exception:
             return "寄"
 
 async def cmd_ping(url):
@@ -57,6 +58,7 @@ async def cmd_ping(url):
     else:
         # 其它系统未测试.
         url = f"ping {url}"
+    
     p = await asyncio.subprocess.create_subprocess_shell(url, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE)
     stdout, stderr = await p.communicate()
     try:
@@ -103,3 +105,20 @@ async def whois_search(api):
             updatetime = (res["data"]["update_date"])
             res = f"请求域名: {url}\n注册商: {reg}\n邮箱: {email}\n注册时间: {regtime}\n过期时间: {exptime}\nDNS服务器: {dnsserver}\n域名状态: {status}\n更新时间: {updatetime}"
             return res
+
+
+
+http_cat = on_command('http_cat', aliases={'httpcat','http猫'}, priority=5, block=True)
+@http_cat.handle()
+async def _handle(code: Message = CommandArg()):
+    url = "https://httpcats.com/{}.jpg".format(code)
+    msgs = await httpcat_msgs('http://www.httpstatus.cn/{}'.format(code))  
+    await http_cat.finish(msgs + MessageSegment.image(file=url, cache=False), at_sender=True)
+#httpx异步 await httpcat_msg(code)
+async def httpcat_msg(code):
+    msgs = await httpcat_msgs('http://www.httpstatus.cn/{}'.format(code))
+    return msgs
+#url同步 httpcat_pic(code)
+def httpcat_pic(code):
+    url = "https://httpcats.com/{}.jpg".format(code)
+    return str(url)
