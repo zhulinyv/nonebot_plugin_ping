@@ -11,8 +11,6 @@ try:
 except:
     model: int = 1
 
-from .httpcat import httpcat_msgs
-
 
 
 """PING网址"""
@@ -105,20 +103,3 @@ async def whois_search(api):
             updatetime = (res["data"]["update_date"])
             res = f"请求域名: {url}\n注册商: {reg}\n邮箱: {email}\n注册时间: {regtime}\n过期时间: {exptime}\nDNS服务器: {dnsserver}\n域名状态: {status}\n更新时间: {updatetime}"
             return res
-
-
-
-http_cat = on_command('http_cat', aliases={'httpcat','http猫'}, priority=5, block=True)
-@http_cat.handle()
-async def _handle(code: Message = CommandArg()):
-    url = "https://httpcats.com/{}.jpg".format(code)
-    msgs = await httpcat_msgs('http://www.httpstatus.cn/{}'.format(code))  
-    await http_cat.finish(msgs + MessageSegment.image(file=url, cache=False), at_sender=True)
-#httpx异步 await httpcat_msg(code)
-async def httpcat_msg(code):
-    msgs = await httpcat_msgs('http://www.httpstatus.cn/{}'.format(code))
-    return msgs
-#url同步 httpcat_pic(code)
-def httpcat_pic(code):
-    url = "https://httpcats.com/{}.jpg".format(code)
-    return str(url)
