@@ -29,3 +29,7 @@
 | ping + url   | ping www.baidu.com   | ping 一个网址            |
 | qrcode + url | qrcode www.baidu.com | 给网址生成一个二维码      |
 | whois + url  | whois www.baidu.com  | 查询一个网址的 whois 信息 |
+
+## 联系我吖
+
+⚠️ 如果遇到任何部署、使用或二次开发上的问题或建议, 可以在 QQ频道: [我的中心花园-开发交流](https://pd.qq.com/s/8bkfowg3c) 找到我。
